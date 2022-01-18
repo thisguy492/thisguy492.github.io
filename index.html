@@ -94,10 +94,10 @@ function Menu(){
 			sensitivity+=-.5
 		   }
 		   if(myGameArea.y>575 && myGameArea.y<625){
-			mapsize+=10
+			mapsize+=20
 		   }
 		   if(myGameArea.y>650 && myGameArea.y<725){
-			mapsize+=-10
+			mapsize+=-20
 		   }
 
 	 ctx.fillStyle = "black";
@@ -109,7 +109,7 @@ function Menu(){
 	 ctx.fillText(mapsize,50,650);
 	}
 	console.log(myGameArea.x,myGameArea.y);
-	if(myGameArea.x>125 && myGameArea.x<200){
+	if(myGameArea.x>125 && myGameArea.x<250){
 	if(myGameArea.y>635 && myGameArea.y<655){
 		ctx.fillStyle = "white";
 		ctx.fillRect(150,630,150,50);
