@@ -5,11 +5,10 @@
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
-body{background-color: #000000;
-cursor: none}
+body{background-color: #000000;}
 </style>
 </head>
-<body onload="Play()">
+<body onload="Load()">
 <canvas id="canvas"></canvas>
 <script>
     var elem = document.documentElement;
@@ -23,11 +22,13 @@ var sensitivity=3;
 var theta = 45*Math.PI/180;
 var Obj = [];
 var View = [];
-var Viewlines=[]
+var Viewlines=[];
 var Objlines=[];
+var minimap=false;
+var mapsize=100;
 
 //First thing need a user input to go to full screen
-function Play(){
+function Load(){
 	   // Get the canvas element form the page
 	    var canvas = document.getElementById("canvas");
 	
@@ -36,43 +37,108 @@ function Play(){
 	   
             canvas.width = window.innerWidth-8;
             canvas.height = window.innerHeight-8;
-            ctx.fillStyle = "#a6e6ff";
-	    ctx.font = 'italic bold 50px sans-serif';
-	    //ctx.textBaseline = 'bottom';
-            //ctx.textAlign = 'contextcenter';
-            //Need to use measure text
-	    ctx.fillText("Click For An Experience",500,canvas.height/2);
+            ctx.fillStyle = "white";
+	    ctx.font = 'italic bold 60px sans-serif';
+	    ctx.fillText("Click To Start",625,canvas.height/2-50);
+	    ctx.font = 'italic bold 20px sans-serif';
+	    ctx.fillText("and then exit fullscreen for instructions",625,canvas.height/2);
 }
-document.getElementById('canvas').addEventListener("click",fullscreen);
+
+document.getElementById('canvas').addEventListener("click",Menu);
 
 //Makes it fullscreen and restarts/starts game
 function fullscreen() {
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.mozRequestFullScreen) { /* Firefox */
-    elem.mozRequestFullScreen();
-  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE/Edge */
-    elem = window.top.document.body; //To break out of frame in IE
-    elem.msRequestFullscreen();
-  }
-if(Isstopped){
-	if(myGameArea.interval>0){
-		myGameArea.interval=setInterval(updateGameArea, 40);
-	}else{
-		startGame();
+	
+	if (elem.requestFullscreen) {
+   	 elem.requestFullscreen();
+  	} else if (elem.mozRequestFullScreen) { /* Firefox */
+   	 elem.mozRequestFullScreen();
+  	} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+ 	   elem.webkitRequestFullscreen();
+ 	 } else if (elem.msRequestFullscreen) { /* IE/Edge */
+  	  elem = window.top.document.body; //To break out of frame in IE
+   	 elem.msRequestFullscreen();
+ 	}
+	Isstopped=false;
+}
+
+//Basically checks if setting change and if we need to re/start the game
+function Menu(){
+  if(Isstopped){
+    if(myGameArea.x){
+	if(myGameArea.x>50 && myGameArea.x<100){
+	ctx.fillStyle = "white";
+	ctx.font = 'italic bold 35px sans-serif';
+	ctx.fillRect(50,100,50,25);
+	ctx.fillRect(50,275,50,25);
+	ctx.fillRect(50,450,50,25);
+	ctx.fillRect(50,625,50,25);
+		   if(myGameArea.y>50 && myGameArea.y<100){
+			pspeed+=10;
+		   }
+		   if(myGameArea.y>125 && myGameArea.y<175){
+		   	pspeed+=-10;
+		   }
+
+		   if(myGameArea.y>225 && myGameArea.y<275){
+			theta+=5*Math.PI/180;
+		   }
+		   if(myGameArea.y>300 && myGameArea.y<350){
+			theta+=-5*Math.PI/180;
+		   }
+
+		   if(myGameArea.y>400 && myGameArea.y<450){
+			sensitivity+=.5
+		   }
+		   if(myGameArea.y>475 && myGameArea.y<525){
+			sensitivity+=-.5
+		   }
+		   if(myGameArea.y>575 && myGameArea.y<625){
+			mapsize+=10
+		   }
+		   if(myGameArea.y>650 && myGameArea.y<725){
+			mapsize+=-10
+		   }
+
+	 ctx.fillStyle = "black";
+	 ctx.fillText(pspeed,50,125);
+	 ctx.fillText(Math.round(theta*180/Math.PI),50,300);
+	 ctx.fillText(sensitivity,50,475);
+
+	 if(!minimap){ctx.fillStyle = "red";}
+	 ctx.fillText(mapsize,50,650);
 	}
-Isstopped=false;
+	console.log(myGameArea.x,myGameArea.y);
+	if(myGameArea.x>125 && myGameArea.x<200){
+	if(myGameArea.y>635 && myGameArea.y<655){
+		ctx.fillStyle = "white";
+		ctx.fillRect(150,630,150,50);
+		minimap=!minimap
+		if(minimap){
+			ctx.fillStyle = "black";
+		}else{
+			ctx.fillStyle = "red";
+		}
+		ctx.fillText("minimap",125,650);
+	}}
+	if(myGameArea.x>500 && myGameArea.x<1150){
+	if(myGameArea.y>70 && myGameArea.y<120){
+		fullscreen();
+		myGameArea.interval=setInterval(updateGameArea, 40);
+	}
+	}
+    }else{
+	fullscreen();
+	startGame();
+    }
+ }
 }
-
-}
-
+//////////END of Menu
 
 //Does first actions, only happens once
 function startGame() {
 
-	addlist=Cube(600,600,600,600);
+	addlist=Cube(600,600,900,600);
 	View.push(...addlist[0]);
 	Viewlines.push(...addlist[1]);
 myGameArea.start();
@@ -155,7 +221,6 @@ this.mini = function(){
 	ctx.fillRect(8, 8, 200, 200);
 	ctx.fillStyle = "blue";
 
-
 	var len = 100/Math.tan(theta)
 	ctx.beginPath();
 	ctx.moveTo(208, 108+len);
@@ -166,10 +231,10 @@ this.mini = function(){
 	ctx.strokeStyle = 'black';
 	ctx.stroke();
    }
-   var a=((this.x-(camw/2))/50)+100
-   var b=(this.z/50)+100
+   var a=((this.x-(camw/2))/mapsize)+100
+   var b=(this.z/mapsize)+100
    ctx.beginPath();
-   ctx.arc(a+8, b+8, 2, 0, 2*Math.PI);
+   ctx.arc(a+8, b+8, 1, 0, 2*Math.PI);
    ctx.fill();
 }
 ////////////////////END of mini
@@ -347,7 +412,7 @@ function Lines(){
 	ctx.beginPath();
 	ctx.moveTo(Pointone[0], Pointone[1]);
 	ctx.lineTo(Pointtwo[0], Pointtwo[1]);
-	ctx.lineWidth = 1;
+	ctx.lineWidth = 2;
 	ctx.strokeStyle = 'blue';
 	ctx.stroke();
 	}
@@ -358,9 +423,9 @@ function Lines(){
 //and appropriate line connections
 function Cube(x,y,z,length){
 
-  cx=x
-  cy=y
-  cz=z
+  cx=x-(length/2);
+  cy=y-(length/2);
+  cz=z-(length/2);
   l=Obj.length;
 
   var moreObj=[];
@@ -403,10 +468,10 @@ function Cube(x,y,z,length){
 
 function Preview(){
   if(movelist[9]!=0){
-
-	size= View[1].x-View[0].x+movelist[9];
-	if (size<0){size=1}
-	addlist=Cube(View[0].x,View[0].y,View[0].z,size);
+	size= View[1].x-View[0].x;
+	var nsize=size+movelist[9];
+	if (size<0){size=1;}
+	addlist=Cube(View[0].x+(size/2),View[0].y+(size/2),View[0].z+(size/2),nsize);
 	View=[];
 	View.push(...addlist[0]);
   }
@@ -424,7 +489,7 @@ function Preview(){
 	ctx.fill();
 	i=2;
 	ctx.fillStyle = "red";
-	//View[p].mini();
+	if(minimap){View[p].mini();}
   }
 
 }
@@ -439,14 +504,9 @@ function updateGameArea() {
   for(i=0; i<Obj.length; i+=1){
 	Obj[i].update();
 	//Obj[i].display();
-	//Obj[i].mini();
+	if(minimap){Obj[i].mini();}
   }
   Lines();
-   ctx = myGameArea.context;
-   ctx.fillStyle = "White";
-   ctx.beginPath();
-   ctx.arc(myGameArea.x+8, myGameArea.y+8, 5, 0, 2*Math.PI);
-   ctx.fill();
   if(!movelist[5]){
 	Preview();
   }
@@ -461,7 +521,7 @@ function updateGameArea() {
 //checks if we exitted fullscreen
 
 }
-/////////////END update game function
+///////////////////////////////////////////////END update game function
 
 
 //Pauses game does an awesome animation
@@ -470,7 +530,6 @@ function Pause(){
   myGameArea.stop();
   Isstopped=true;
   console.log("start");
-
      function Pauseanime(){
 	  pausecount+=1;
 	
@@ -489,12 +548,35 @@ function Pause(){
 		clearInterval(myVar);
 		ctx.fillStyle = "#000000";
 		ctx.font = 'italic bold 50px sans-serif';
-		ctx.fillText("Paused!",700,100);
+		ctx.fillText("Paused! Click here to play",500,100);
 		ctx.font = 'italic bold 40px sans-serif';
-		ctx.fillText("*Q,W,E,A,S,D for movement",400,200);
-		ctx.fillText("*Hold Enter for preview mode",400,300);
-		ctx.fillText("*R to place cube",400,400);
-		ctx.fillText("*Click to toggle look mode?? idk how to explain that",400,500);
+		ctx.fillText("W,A,S,D,Q,E for movement",400,200);
+		ctx.fillText("Hold Enter to move preview cube",400,275);
+		ctx.fillText("Up and Down arrows to change preview cube size",400,350);
+		ctx.fillText("R to place cube",400,425);
+		ctx.fillText("Move mouse to look, click to toggle look mode",400,500);
+		
+		ctx.font = 'italic bold 30px sans-serif';
+		ctx.fillRect(50,50,50,50);
+		ctx.fillRect(50,125,50,50);
+		ctx.fillText("player speed",125,125);
+
+		ctx.fillRect(50,225,50,50);
+		ctx.fillRect(50,300,50,50);
+		ctx.fillText("field of view",125,300);
+
+		ctx.fillRect(50,400,50,50);
+		ctx.fillRect(50,475,50,50);
+		ctx.fillText("sensitivity",125,475);
+		
+		ctx.fillRect(50,575,50,50);
+		ctx.fillRect(50,650,50,50);
+		if(minimap){
+		ctx.fillStyle = "black";
+		}else{
+		ctx.fillStyle = "red";
+		}
+		ctx.fillText("minimap",125,650);
 	}
      }
 }
