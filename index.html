@@ -17,7 +17,7 @@ var screenchange=-1;
 var screens=true;
 var Isstopped=true;
 var pausecount=0;
-var pspeed= 50;
+var pspeed= 40;
 var sensitivity=3;
 var theta = 45*Math.PI/180;
 var Obj = [];
@@ -69,15 +69,15 @@ function Menu(){
 	if(myGameArea.x>50 && myGameArea.x<100){
 	ctx.fillStyle = "white";
 	ctx.font = 'italic bold 35px sans-serif';
-	ctx.fillRect(50,100,50,25);
-	ctx.fillRect(50,275,50,25);
-	ctx.fillRect(50,450,50,25);
-	ctx.fillRect(50,625,50,25);
+	ctx.fillRect(45,100,75,25);
+	ctx.fillRect(45,275,75,25);
+	ctx.fillRect(45,450,75,25);
+	ctx.fillRect(45,625,75,25);
 		   if(myGameArea.y>50 && myGameArea.y<100){
-			pspeed+=10;
+			pspeed+=20;
 		   }
 		   if(myGameArea.y>125 && myGameArea.y<175){
-		   	pspeed+=-10;
+		   	pspeed+=-20;
 		   }
 
 		   if(myGameArea.y>225 && myGameArea.y<275){
@@ -94,23 +94,49 @@ function Menu(){
 			sensitivity+=-.5
 		   }
 		   if(myGameArea.y>575 && myGameArea.y<625){
-			mapsize+=20
+			mapsize+=50
 		   }
 		   if(myGameArea.y>650 && myGameArea.y<725){
-			mapsize+=-20
+			mapsize+=-50
 		   }
-
+	if(theta<0){theta=0;}
+	if(theta>Math.PI/2){theta=Math.PI/2-.001}
 	 ctx.fillStyle = "black";
-	 ctx.fillText(pspeed,50,125);
-	 ctx.fillText(Math.round(theta*180/Math.PI),50,300);
+	 ctx.fillText(pspeed,45,125);
+	 ctx.fillText(Math.round(theta*180/Math.PI)+90,45,300);
 	 ctx.fillText(sensitivity,50,475);
-
 	 if(!minimap){ctx.fillStyle = "red";}
-	 ctx.fillText(mapsize,50,650);
+	 ctx.fillText(mapsize,45,650);
+	
+	 var settings=[pspeed, theta, sensitivity, mapsize];
+	 sessionStorage.setItem("settings0492",JSON.stringify(settings));
 	}
 	console.log(myGameArea.x,myGameArea.y);
-	if(myGameArea.x>125 && myGameArea.x<250){
+	
 	if(myGameArea.y>635 && myGameArea.y<655){
+	   //Saves
+	   if(myGameArea.x>400 && myGameArea.x<500){
+		var savename = prompt("What Name to save under?", "Piss lol");
+		localStorage.setItem(savename,JSON.stringify(Obj));
+		savename+="492";
+		localStorage.setItem(savename,JSON.stringify(Objlines));
+	   }
+	   //Loads
+	   if(myGameArea.x>550 && myGameArea.x<650){
+		var savename = prompt("What Save Name", "Pee idk");
+		var storedArray = localStorage.getItem(savename);
+		var Objsave = JSON.parse(storedArray);
+		Obj = [];
+		for(p=0; p<Objsave.length; p+=1){
+			Obj.push(new component (Objsave[p].x,Objsave[p].y,Objsave[p].z))
+		}
+		console.log(Obj);
+		savename+="492";
+		var storedArray = localStorage.getItem(savename);
+		Objlines = JSON.parse(storedArray);
+	   }
+	
+	   if(myGameArea.x>125 && myGameArea.x<250){
 		ctx.fillStyle = "white";
 		ctx.fillRect(150,630,150,50);
 		minimap=!minimap
@@ -120,7 +146,8 @@ function Menu(){
 			ctx.fillStyle = "red";
 		}
 		ctx.fillText("minimap",125,650);
-	}}
+	   }
+	}
 	if(myGameArea.x>500 && myGameArea.x<1150){
 	if(myGameArea.y>70 && myGameArea.y<120){
 		fullscreen();
@@ -137,7 +164,17 @@ function Menu(){
 
 //Does first actions, only happens once
 function startGame() {
-
+	
+	
+	var settings = sessionStorage.getItem("settings0492");
+	if (settings){
+	settings=JSON.parse(settings);
+	pspeed=settings[0];
+	theta=settings[1];
+	sensitivity=settings[2];
+	mapsize=settings[3];
+	}
+	console.log(settings);
 	addlist=Cube(600,600,900,600);
 	View.push(...addlist[0]);
 	Viewlines.push(...addlist[1]);
@@ -569,14 +606,17 @@ function Pause(){
 		ctx.fillRect(50,475,50,50);
 		ctx.fillText("sensitivity",125,475);
 		
+		ctx.fillText("Save",400,650);
+		ctx.fillText("Load",550,650);
+
 		ctx.fillRect(50,575,50,50);
 		ctx.fillRect(50,650,50,50);
-		if(minimap){
-		ctx.fillStyle = "black";
-		}else{
+		if(!minimap){
 		ctx.fillStyle = "red";
 		}
 		ctx.fillText("minimap",125,650);
+		
+		
 	}
      }
 }
