@@ -22,3 +22,32 @@ code {
 #root{
   height: 100%;
 }
+/* Top navigation bar */
+nav {
+  display: flex;
+  background-color: #333;
+}
+
+/* Navigation bar links */
+nav a {
+  color: white;
+  padding: 20px 60px;
+  text-decoration: none;
+  text-align: center;
+  font-size: large;
+}
+
+/* Change color on hover */
+nav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+.MainTitle{
+  padding: 30px 40px;
+  font-size: 150%
+}
+.ThisMe{
+  position: fixed;
+  right: 10%;
+  top: 80%
+}

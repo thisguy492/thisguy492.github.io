@@ -1,11 +1,17 @@
-import React, { useState} from 'react';
+
+import Typewriter from "./elements/TypeWriter";
 function Home() {
-    const [title, setTitle] = useState('');
+
   return (
     <div>
-      <h1>Welcome to the Home Page {title}</h1>
-      <input value={title} onChange={(e) => setTitle(e.target.value)} />
-      <p>This is the main page of our multi-page React application.</p>
+        <div class="MainTitle">
+      <h1>HI! <Typewriter text="Welcome To My Website" delay={100} offset={0} /> </h1>
+        </div>
+
+        <div className="ThisMe">
+            <p>This is Me</p>
+        </div>
+
     </div>
 
   );

@@ -9,7 +9,8 @@ function App() {
   return (
     <BrowserRouter>
       <nav>  {/* Navigation Links */}
-        <Link to="/">Home</Link> | <Link to="/about">About</Link> | <Link to="/contact">Contact</Link> | <Link to="/cube">CUBE</Link>
+       <h1>Xavier Stephenson's Site</h1> <Link to="/">Home</Link> | <Link to="/projects">Projects</Link> | 
+       <Link to="/resume">Resume</Link> | <Link to="/about">About</Link> | <Link to="/contact">Contact</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
