@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+<title>3d Painter? With Cubes</title>
+<head>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+body{background-color: #000000}
+</style>
+</head>
+<body onload="Load()">
+<canvas id="canvas"></canvas>
+<script>
+    var elem = document.documentElement;
+
+var screenchange=-1;
+var screens=true;
+var Isstopped=true;
+var pausecount=0;
+var pspeed= 40;
+var sensitivity=3;
+var theta = 45*Math.PI/180;
+var Obj = [];
+var View = [];
+var Viewlines=[];
+var Objlines=[];
+var minimap=false;
+var mapsize=100;
+
+//First thing need a user input to go to full screen
+function Load(){
+	   // Get the canvas element form the page
+	    var canvas = document.getElementById("canvas");
+	
+	    // Make a 2D context
+	    var ctx = canvas.getContext("2d");
+	   
+            canvas.width = window.innerWidth-8;
+            canvas.height = window.innerHeight-8;
+            ctx.fillStyle = "white";
+	    ctx.font = 'italic bold 60px sans-serif';
+	    ctx.fillText("Click To Start",625,canvas.height/2-50);
+	    ctx.font = 'italic bold 20px sans-serif';
+	    ctx.fillText("and then exit fullscreen for instructions",625,canvas.height/2);
+}
+
+document.getElementById('canvas').addEventListener("click",Menu);
+
+//Makes it fullscreen and restarts/starts game
+function fullscreen() {
+	
+	if (elem.requestFullscreen) {
+   	 elem.requestFullscreen();
+  	} else if (elem.mozRequestFullScreen) { /* Firefox */
+   	 elem.mozRequestFullScreen();
+  	} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+ 	   elem.webkitRequestFullscreen();
+ 	 } else if (elem.msRequestFullscreen) { /* IE/Edge */
+  	  elem = window.top.document.body; //To break out of frame in IE
+   	 elem.msRequestFullscreen();
+ 	}
+	Isstopped=false;
+}
+
+//Basically checks if setting change and if we need to re/start the game
+function Menu(){
+  if(Isstopped){
+    if(myGameArea.x){
+	if(myGameArea.x>50 && myGameArea.x<100){
+	ctx.fillStyle = "black";
+	ctx.font = 'italic bold 35px sans-serif';
+	ctx.fillRect(45,100,75,25);
+	ctx.fillRect(45,275,75,25);
+	ctx.fillRect(45,450,75,25);
+	ctx.fillRect(45,625,75,25);
+		   if(myGameArea.y>50 && myGameArea.y<100){
+			pspeed+=20;
+		   }
+		   if(myGameArea.y>125 && myGameArea.y<175){
+		   	pspeed+=-20;
+		   }
+
+		   if(myGameArea.y>225 && myGameArea.y<275){
+			theta+=5*Math.PI/180;
+		   }
+		   if(myGameArea.y>300 && myGameArea.y<350){
+			theta+=-5*Math.PI/180;
+		   }
+
+		   if(myGameArea.y>400 && myGameArea.y<450){
+			sensitivity+=.5
+		   }
+		   if(myGameArea.y>475 && myGameArea.y<525){
+			sensitivity+=-.5
+		   }
+		   if(myGameArea.y>575 && myGameArea.y<625){
+			mapsize+=50
+		   }
+		   if(myGameArea.y>650 && myGameArea.y<725){
+			mapsize+=-50
+		   }
+	if(theta<0){theta=0;}
+	if(theta>Math.PI/2){theta=Math.PI/2-.001}
+	 ctx.fillStyle = "white";
+	 ctx.fillText(pspeed,45,125);
+	 ctx.fillText(Math.round(theta*180/Math.PI)+90,45,300);
+	 ctx.fillText(sensitivity,50,475);
+	 if(!minimap){ctx.fillStyle = "red";}
+	 ctx.fillText(mapsize,45,650);
+	
+	 var settings=[pspeed, theta, sensitivity, mapsize];
+	 sessionStorage.setItem("settings0492",JSON.stringify(settings));
+	}
+	console.log(myGameArea.x,myGameArea.y);
+	
+	if(myGameArea.y>635 && myGameArea.y<655){
+	   //Saves
+	   if(myGameArea.x>400 && myGameArea.x<500){
+		var savename = prompt("What Name to save under?", "Thisgame");
+		localStorage.setItem(savename,JSON.stringify(Obj));
+		savename+="492";
+		localStorage.setItem(savename,JSON.stringify(Objlines));
+	   }
+	   //Loads
+	   if(myGameArea.x>550 && myGameArea.x<650){
+		var savename = prompt("What Save Name", "Thisgame");
+		var storedArray = localStorage.getItem(savename);
+		var Objsave = JSON.parse(storedArray);
+		Obj = [];
+		for(p=0; p<Objsave.length; p+=1){
+			Obj.push(new component (Objsave[p].x,Objsave[p].y,Objsave[p].z))
+		}
+		console.log(Obj);
+		savename+="492";
+		var storedArray = localStorage.getItem(savename);
+		Objlines = JSON.parse(storedArray);
+	   }
+	
+	   if(myGameArea.x>125 && myGameArea.x<250){
+		ctx.fillStyle = "white";
+		ctx.fillRect(150,630,150,50);
+		minimap=!minimap
+		if(minimap){
+			ctx.fillStyle = "black";
+		}else{
+			ctx.fillStyle = "red";
+		}
+		ctx.fillText("minimap",125,650);
+	   }
+	}
+	if(myGameArea.x>500 && myGameArea.x<1150){
+	if(myGameArea.y>70 && myGameArea.y<120){
+		fullscreen();
+		myGameArea.interval=setInterval(updateGameArea, 40);
+	}
+	}
+    }else{
+	fullscreen();
+	startGame();
+    }
+ }
+}
+//////////END of Menu
+
+//Does first actions, only happens once
+function startGame() {
+	
+	
+	var settings = sessionStorage.getItem("settings0492");
+	if (settings){
+	settings=JSON.parse(settings);
+	pspeed=settings[0];
+	theta=settings[1];
+	sensitivity=settings[2];
+	mapsize=settings[3];
+	}
+	console.log(settings);
+	addlist=Cube(600,600,900,600);
+	View.push(...addlist[0]);
+	Viewlines.push(...addlist[1]);
+myGameArea.start();
+}
+
+//Barely understand this but a lot is going on
+var myGameArea = {
+    canvas : document.getElementById("canvas"),
+    start : function() {
+	this.canvas.width =  window.innerWidth-8;
+        this.canvas.height =  window.outerHeight;
+        this.context = this.canvas.getContext("2d");
+        this.frameNo = 0;
+	this.interval = setInterval(updateGameArea, 40);
+	window.addEventListener('mousedown', function (e) {
+            myGameArea.track = !myGameArea.track;
+        })
+
+	window.addEventListener('mousemove', function (e) {
+	    myGameArea.x = e.pageX;
+            myGameArea.y = e.pageY;
+    	})
+
+	window.addEventListener('touchstart', function (e) {
+            myGameArea.track = true;
+        })
+        window.addEventListener('touchend', function (e) {
+            myGameArea.track = false;
+        })
+	window.addEventListener('touchmove', function (e) {
+	    myGameArea.x = e.touches[0].screenX;
+	    myGameArea.y = e.touches[0].screenY;
+	})
+
+	window.addEventListener('keydown', function (e) {
+      	    myGameArea.keys = (myGameArea.keys || []);
+	    myGameArea.keys[e.keyCode] = true; 
+	    myGameArea.what= true;  
+	})
+    	window.addEventListener('keyup', function (e) {
+	   myGameArea.keys[e.keyCode] = false;
+	   myGameArea.what= false;
+	})
+
+	document.addEventListener("fullscreenchange", function() {
+  		screenchange+=1;
+	});
+	document.addEventListener("mozfullscreenchange", function() {
+  		screenchange+=1;
+	});
+	document.addEventListener("webkitfullscreenchange", function() {
+  		screenchange+=1;
+	});
+	document.addEventListener("msfullscreenchange", function() {
+ 		 screenchange+=1;
+	});
+
+   },
+   clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+   },
+   stop : function() {
+        clearInterval(this.interval);
+   }
+}
+
+
+function component(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+
+//displays the minimap
+this.mini = function(){
+   camw = myGameArea.canvas.width;
+   camh = myGameArea.canvas.height;
+   ctx = myGameArea.context;
+   if(i==0){
+	ctx.fillStyle = "White";
+	ctx.fillRect(8, 8, 200, 200);
+	ctx.fillStyle = "blue";
+
+	var len = 100/Math.tan(theta)
+	ctx.beginPath();
+	ctx.moveTo(208, 108+len);
+	ctx.lineTo(100+(camw/100)+8, 108);
+	ctx.lineTo(100-(camw/100)+8, 108);
+	ctx.lineTo(8, 108+len);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = 'black';
+	ctx.stroke();
+   }
+   var a=((this.x-(camw/2))/mapsize)+100
+   var b=(this.z/mapsize)+100
+   ctx.beginPath();
+   ctx.arc(a+8, b+8, 1, 0, 2*Math.PI);
+   ctx.fill();
+}
+////////////////////END of mini
+
+//returns the 2d point on screen from 3d points of object
+this.display = function(){
+
+  camw = myGameArea.canvas.width;
+  camh = myGameArea.canvas.height;
+  ctx = myGameArea.context;
+
+  var trig = (Math.tan(theta)*(this.z));		
+  if(this.x>-trig && this.x<(camw)+trig){
+  if(this.y>-trig && this.y<(camh)+trig){
+  if(this.z>0){
+
+	var outskirt = this.x+(trig);
+	var mid=(camw/2)-(this.x);
+	var ratiox=outskirt/(mid+outskirt)
+
+
+	outskirt = this.y+(trig);
+	mid=(camh/2)-(this.y);
+	var ratioy=outskirt/(mid+outskirt)
+	
+	//ctx.font = 'italic bold 20px sans-serif';
+	//ctx.fillText(i,camw*ratiox/2, camh*ratioy/2);
+
+	return [(camw*ratiox/2),camh*ratioy/2]
+
+  }}}
+return []
+}
+//////////////////////END of display
+
+
+//Moves all the objects
+this.update = function(){
+
+  Obj[i].x+=movelist[2];
+  Obj[i].y+=movelist[3];
+  Obj[i].z+=movelist[4];
+
+  var r;
+  var objtheta;
+  var camx=myGameArea.canvas.width/2;
+  var camy=myGameArea.canvas.height/2
+
+  if(movelist[0] != 0){
+	r=Math.sqrt((Obj[i].x-camx)**2+Obj[i].z**2);
+	objtheta=Math.atan(Obj[i].z/(Obj[i].x-camx));
+	objtheta+=movelist[0];
+	
+   	if((Obj[i].x-camx)<0){
+		Obj[i].x = -Math.cos(objtheta)*r + camx;
+		Obj[i].z= -Math.sin(objtheta)*r;
+	}else{	
+		Obj[i].x = Math.cos(objtheta)*r + camx;
+		Obj[i].z= Math.sin(objtheta)*r;
+	}
+  }
+
+  if(movelist[1] != 0){
+	r=Math.sqrt((Obj[i].y-camy)**2+Obj[i].z**2);
+	objtheta=Math.atan(Obj[i].z/(Obj[i].y-camy));
+	objtheta+=movelist[1];
+
+   	if((Obj[i].y-camy)<0){
+		Obj[i].y = -Math.cos(objtheta)*r + camy;
+		Obj[i].z= -Math.sin(objtheta)*r;
+	}else{	
+		Obj[i].y = Math.cos(objtheta)*r + camy;
+		Obj[i].z= Math.sin(objtheta)*r;
+	}
+   }
+}	
+////////END of update
+
+}
+///////////////////////////////END components
+
+
+
+
+//Listens to all player actions  (except esc) and records them in array
+//Also places cube
+function Playermove(){
+
+ //movelist = [look left/right, look up/down, move right/left, move up/down, move forward/back,
+ //	      toggle preview, preview: move right/left, move up/down, move forwad/back, size up/down]
+ var movelist=[0,0,0,0,0,true,0,0,0,0];
+
+ var size=600;
+ if (myGameArea.keys && myGameArea.keys[13]) {movelist[5]=false;}
+ if(movelist[5]){
+  if (myGameArea.keys && myGameArea.keys[65]) {movelist[2]=pspeed;}
+  if (myGameArea.keys && myGameArea.keys[68]) {movelist[2]=-pspeed; }
+  if (myGameArea.keys && myGameArea.keys[87]) {movelist[3]=pspeed; }
+  if (myGameArea.keys && myGameArea.keys[83]) {movelist[3]=-pspeed;}
+  if (myGameArea.keys && myGameArea.keys[81]) {movelist[4]=pspeed; }
+  if (myGameArea.keys && myGameArea.keys[69]) {movelist[4]=-pspeed;}
+ }else{
+  if (myGameArea.keys[65]) {movelist[6]=pspeed;}
+  if (myGameArea.keys[68]) {movelist[6]=-pspeed;}
+  if (myGameArea.keys[87]) {movelist[7]=pspeed; }
+  if (myGameArea.keys[83]) {movelist[7]=-pspeed;}
+  if (myGameArea.keys[81]) {movelist[8]=pspeed; }
+  if (myGameArea.keys[69]) {movelist[8]=-pspeed;}
+  if (myGameArea.keys[38]) {movelist[9]=pspeed; }
+  if (myGameArea.keys[40]) {movelist[9]=-pspeed;}
+ }
+
+//Places cube
+ if (myGameArea.keys && myGameArea.keys[82]) {
+   for(p=0; p<Viewlines.length; p+=1){
+ 	add= Viewlines[p]+Obj.length
+	Objlines.push(add);
+   }
+   for(p=0; p<View.length; p+=1){
+	xp=View[p].x;
+	yp=View[p].y;
+	zp=View[p].z;
+	Obj.push(new component(xp,yp,zp));
+   }
+ }
+//
+
+  var xtheta=0;
+  var ytheta=0;
+  var camx=myGameArea.canvas.width/2;
+  var camy=myGameArea.canvas.height/2
+  if(myGameArea.track){
+	if(myGameArea.x>(camx)+100){
+	movelist[0]=sensitivity*(Math.PI/180);
+	//console.log("right");
+	}
+	if( myGameArea.x<camx-100){
+	movelist[0]=-sensitivity*(Math.PI/180);
+	//console.log("left");
+	}
+	if(myGameArea.y>(camy)+100){
+	movelist[1]=sensitivity*(Math.PI/180);
+	//console.log("down");
+	}
+	if(myGameArea.y<camy-100){
+	movelist[1]=-sensitivity*(Math.PI/180);
+	//console.log("up");
+	}
+  }
+
+return movelist
+}
+////////////////////////////////end of playermove
+
+
+//asks display for the points on the screen then connects the point according to objlines
+function Lines(){
+
+ for(n=0; n<Objlines.length-1; n+=2){
+	i=Objlines[n];
+
+	Pointone = Obj[i].display();
+	i=Objlines[n+1];
+	Pointtwo = Obj[i].display();
+	if(Pointone==[]){
+	  Pointone[0]=Pointtwo[0]
+	  Pointone[1]=Pointtwo[1]
+	}
+	if(Pointtwo==[]){
+	  Pointtwo[0]=Pointone[0]
+	  Pointtwo[1]=Pointone[1]
+	}
+	//console.log("1",Pointone,"2",Pointtwo)
+	ctx = myGameArea.context;
+	ctx.beginPath();
+	ctx.moveTo(Pointone[0], Pointone[1]);
+	ctx.lineTo(Pointtwo[0], Pointtwo[1]);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = 'blue';
+	ctx.stroke();
+	}
+}
+////////////////////////////END lines
+
+//input upper left corner coords and outputs rest of the points 
+//and appropriate line connections
+function Cube(x,y,z,length){
+
+  cx=x-(length/2);
+  cy=y-(length/2);
+  cz=z-(length/2);
+  l=Obj.length;
+
+  var moreObj=[];
+  var moreObjlines=[];
+
+  for(h=0; h<2; h+=1){
+	z= cz+h*length
+  	for(j=0; j<2; j+=1){
+  		y= cy+j*length
+  		for(k=0; k<2; k+=1){
+  			x=cx+ k*length
+  			moreObj.push(new component(x, y, z));
+  			//console.log(x,y,z);
+  }}}
+
+  for(add=0; add<7; add+=2){
+	moreObjlines.push(l+add);
+	moreObjlines.push(l+add+1);
+  }
+  for(add=0; add<4; add+=1){
+	moreObjlines.push(l+add);
+	moreObjlines.push(l+add+4);
+  }
+  moreObjlines.push(l);
+  moreObjlines.push(l+2);
+
+  moreObjlines.push(l+1);
+  moreObjlines.push(l+3);
+
+  moreObjlines.push(l+4);
+  moreObjlines.push(l+6);
+
+  moreObjlines.push(l+5);
+  moreObjlines.push(l+7);
+
+  //console.log(Objlines);
+  return [moreObj,moreObjlines]
+}
+//////////////////////////END cube
+
+function Preview(){
+  if(movelist[9]!=0){
+	size= View[1].x-View[0].x;
+	var nsize=size+movelist[9];
+	if (size<0){size=1;}
+	addlist=Cube(View[0].x+(size/2),View[0].y+(size/2),View[0].z+(size/2),nsize);
+	View=[];
+	View.push(...addlist[0]);
+  }
+
+  for(p=0; p<View.length; p+=1){
+	View[p].x+=movelist[6];
+	View[p].y+=movelist[7];
+	View[p].z+=movelist[8];
+	//console.log(View[p].x,View[p].y,View[p].z);
+	prepos=View[p].display();
+	ctx = myGameArea.context;
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+	ctx.arc(prepos[0], prepos[1], 2, 0, 2 * Math.PI);
+	ctx.fill();
+	i=2;
+	ctx.fillStyle = "red";
+	if(minimap){View[p].mini();}
+  }
+
+}
+
+
+//runs like 12 times a second
+function updateGameArea() {
+  myGameArea.clear();   
+
+  movelist=Playermove();
+
+  for(i=0; i<Obj.length; i+=1){
+	Obj[i].update();
+	//Obj[i].display();
+	if(minimap){Obj[i].mini();}
+  }
+  Lines();
+  if(!movelist[5]){
+	Preview();
+  }
+
+  if(screenchange>0){
+	screenchange=0;
+  	if(screens){
+		Pause();
+	}
+	screens = !screens;
+  }
+//checks if we exitted fullscreen
+
+}
+///////////////////////////////////////////////END update game function
+
+
+//Pauses game does an awesome animation
+function Pause(){
+  var myVar = setInterval(Pauseanime, 10);
+  myGameArea.stop();
+  Isstopped=true;
+  console.log("start");
+     function Pauseanime(){
+	  pausecount+=1;
+	
+	  ctx = myGameArea.context;
+ 	  ctx.fillStyle = "black";
+	  width = myGameArea.canvas.width*(pausecount/60);
+	  height = myGameArea.canvas.height*(pausecount/60);
+	  x=(myGameArea.canvas.width/2)-(myGameArea.canvas.width/2)*(pausecount/60);
+	  y=(myGameArea.canvas.height/2)-(myGameArea.canvas.height/2)*(pausecount/60);
+
+	  //console.log("width", width,"height", height);
+	  ctx.fillRect(x, y, width, height);
+	 if (pausecount>59){
+		console.log("stop");
+		pausecount=0;
+		clearInterval(myVar);
+		ctx.fillStyle = "white";
+		ctx.font = 'italic bold 50px sans-serif';
+		ctx.fillText("Paused! Click here to play",500,100);
+		ctx.font = 'italic bold 40px sans-serif';
+		ctx.fillText("W,A,S,D,Q,E for movement",400,200);
+		ctx.fillText("Hold Enter to move preview cube",400,275);
+		ctx.fillText("Up and Down arrows to change preview cube size",400,350);
+		ctx.fillText("R to place cube",400,425);
+		ctx.fillText("Move mouse to look, click to toggle look mode",400,500);
+		
+		ctx.font = 'italic bold 30px sans-serif';
+		ctx.fillRect(50,50,50,50);
+		ctx.fillRect(50,125,50,50);
+		ctx.fillText("player speed",125,125);
+
+		ctx.fillRect(50,225,50,50);
+		ctx.fillRect(50,300,50,50);
+		ctx.fillText("field of view",125,300);
+
+		ctx.fillRect(50,400,50,50);
+		ctx.fillRect(50,475,50,50);
+		ctx.fillText("sensitivity",125,475);
+		
+		ctx.fillText("Save",400,650);
+		ctx.fillText("Load",550,650);
+
+		ctx.fillRect(50,575,50,50);
+		ctx.fillRect(50,650,50,50);
+		if(!minimap){
+		ctx.fillStyle = "red";
+		}
+		ctx.fillText("minimap",125,650);
+		
+		
+	}
+     }
+}
+////END of pause function
+
+
+</script>
+</body>
+</html>
