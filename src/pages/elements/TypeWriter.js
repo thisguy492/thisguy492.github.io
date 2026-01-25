@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const Typewriter = ({ text, delay, offset }) => {
+const Typewriter = ({ typewriterclass }) => {
+  const text = typewriterclass.text
+  const delay = typewriterclass.delay
+  const offset = typewriterclass.offset
   const [currentText, setCurrentText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   
