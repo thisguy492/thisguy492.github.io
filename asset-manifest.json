@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.ffffc6c9.css",
-    "main.js": "/static/js/main.204fd6a2.js",
+    "main.js": "/static/js/main.4b705024.js",
     "static/js/453.ccf28b87.chunk.js": "/static/js/453.ccf28b87.chunk.js",
     "static/media/PillVid.mp4": "/static/media/PillVid.b7950fdd4bcb3e416e08.mp4",
     "static/media/MeAndTire.png": "/static/media/MeAndTire.7892451d9246bbcf4c9a.png",
@@ -16,11 +16,11 @@
     "static/media/OnlineGames.png": "/static/media/OnlineGames.e50d2059c7943225be9a.png",
     "index.html": "/index.html",
     "main.ffffc6c9.css.map": "/static/css/main.ffffc6c9.css.map",
-    "main.204fd6a2.js.map": "/static/js/main.204fd6a2.js.map",
+    "main.4b705024.js.map": "/static/js/main.4b705024.js.map",
     "453.ccf28b87.chunk.js.map": "/static/js/453.ccf28b87.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ffffc6c9.css",
-    "static/js/main.204fd6a2.js"
+    "static/js/main.4b705024.js"
   ]
 }
