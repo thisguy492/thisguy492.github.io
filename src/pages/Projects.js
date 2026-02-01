@@ -8,6 +8,12 @@ import MeAndTire from ".//imgs/MeAndTire.png"
 import PillVid from ".//imgs/PillVid.mp4"
 import Tireimg from ".//imgs/Tire.png"
 
+const goToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+    });
+};
 
 const Card = (title,text, pic,pic_caption) => {
 
@@ -126,28 +132,28 @@ const All=() =>{
         <div class="container_container">
         <div class="container projects">
 
-        <a href="/projects/rock">
+        <a href="/rock" onClick={goToTop}>
             {Card("NASA Synthetic Sensor-Embedded Moon Rock Design and Manufacturing",
             "Over the course of a semster I worked with 4 other students to design a manufacturing plan to create cheap synthetic moon rocks capable of logging force interactions. To aid in rover wheel testing at NASA Glenn Research Center",
             RockInTest,
             `Synthetic Rock prototype inside of testing rig at the University`)}
         </a>
 
-        <a href="/projects/pill">
+        <a href="/pill" onClick={goToTop}>
             {Card("Pill Bottle Fill Station",
             'Junior Year we were given a 20"x20"x40" of 8-20 framing, a small budget and, a goal, to automatically fill and cap 12 pill bottles with exactly 30 pills each. Over the course of a year some teams made it and some did not, fortunetly my team was able to see it through and show the judges of our showcase our final working protype',
             Teambottle,
             `The team posing with the final iteration of the device`)}
         </a>
 
-        <a href="/projects/websites">
+        <a href="/websites" onClick={goToTop}>
             {Card("Websites",
             'Before this site I created two different websites. One to challenge myself with 3D graphics and another to have a place my friends I can play board games online. Neither showcase my design skills but I am nonetheless immesly proud of the final results.',
             OnlineGames,
             "Home Screen of my board game website")}
         </a>
 
-        <a href="/projects/tire">
+        <a href="/tire" onClick={goToTop}>
             {Card("NASA Flexible Tire",
             "As an extension of my teams senior design project, we were tasked with creating a device capable of sensing the footprint and pressure map from a Airless flexible tire that does not affect the results",
             MeAndTire,

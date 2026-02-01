@@ -20,12 +20,12 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/cube" element={<CubePainter />} />
         <Route path="/resume" element={<Resume />} />
-        <Route path="/projects" element={<Projects.All />}>
-          <Route path="websites" element={<Projects.Website />} />
-          <Route path="rock" element={<Projects.Rock />} />
-          <Route path="tire" element={<Projects.Tire />} />
-          <Route path="pill" element={<Projects.Pill/>} />
-        </Route>
+        <Route path="/projects" element={<Projects.All />} />
+          <Route path="/websites" element={<><Projects.Website /><Projects.All /></>} />
+          <Route path="/rock" element={<><Projects.Rock /><Projects.All /></>} />
+          <Route path="/tire" element={<><Projects.Tire /><Projects.All /></>} />
+          <Route path="/pill" element={<><Projects.Pill/><Projects.All /></>} />
+       
         <Route path="*" element={<h1>404 - Page Not Found</h1>} />
       </Routes>
       </div>
