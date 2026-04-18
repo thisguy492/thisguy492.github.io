@@ -19,7 +19,7 @@ html, body {
     width: 100%;
 }
 #content{
-  margin: 5%;
+  margin: 1% 5%;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -33,9 +33,10 @@ code {
 }
 /* Top navigation bar */
 nav h1{
-  padding: 0%;
+  padding: 0% 1%;
   margin: 0%;
   color: #c4c1c1;
+  text-align: center;
 }
 
 nav {
@@ -161,7 +162,7 @@ a:hover + .hide{
 
         .project{
             text-align: center;
-            padding: 5%;
+            padding: 1% 5%;
         }
         .all{
           padding: 0%;
@@ -204,3 +205,37 @@ a:hover + .hide{
             color: rgb(0, 0, 0);
             font-weight: normal;
         }
+
+.cards {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+}
+.cards div {
+  flex: 1 1 220px;
+  padding: 24px;
+  border-radius: 16px;
+  
+  box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+}
+.cards .nuetral{
+  background: #f1f5f9;
+}
+.cards .correct{
+  background: #1ddf33;
+}
+.cards .incorrect{
+  background: #ff0000;
+}
+.cards h2 {
+  margin-top: 0;
+}
+input[type="number"] {
+    width: 30%;
+    max-width: 300px;
+    box-sizing: border-box;
+}

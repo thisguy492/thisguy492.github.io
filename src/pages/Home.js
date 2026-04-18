@@ -1,4 +1,4 @@
-
+import {Link} from "react-router-dom";
 import Typewriter from "./elements/TypeWriter";
 import Matt from ".//imgs/MAtt.gif"
 
@@ -28,10 +28,10 @@ function Home() {
 
         <div style={{position: "fixed", top: "40%", left: "1%", fontSize: "20px", width: "100%",padding: "0px", margin: "0px"}}>
             <ul>
-                <li className="homelist"><a href="/projects">Projects</a><p className="hide">     Click here to see my favorite projects</p></li>
-                <li className="homelist"><a href="/resume">Resume</a><p className="hide">     Here to see my professional resume</p></li>
-                <li className="homelist"><a href="/about">About Me</a><p className="hide">     Click here if you'd like to get to know me some more</p></li>
-                <li className="homelist"><a href="/contact">Contact</a><p className="hide">     Let's Chat! Click here to get in contact</p></li>
+                <li className="homelist"><Link to="/projects">Projects</Link><p className="hide">     Click here to see my favorite projects</p></li>
+                <li className="homelist"><Link to="/resume">Resume</Link><p className="hide">     Here to see my professional resume</p></li>
+                <li className="homelist"><Link to="/about">About Me</Link><p className="hide">     Click here if you'd like to get to know me some more</p></li>
+                <li className="homelist"><Link to="/contact">Contact</Link><p className="hide">     Let's Chat! Click here to get in contact</p></li>
             </ul>
         </div>
         <div style={{position: "fixed", top: "15%", left: "50%",height: "100%", width: "50%", zIndex: -1}}>

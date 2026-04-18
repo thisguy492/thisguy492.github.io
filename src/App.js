@@ -1,9 +1,11 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import CubePainter from './pages/CubePainter';
 import Resume from './pages/Resume';
+import Stickers from './pages/Stickers';
+import Study from './pages/Study';
 import * as Projects from './pages/Projects';
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/cube" element={<CubePainter />} />
         <Route path="/resume" element={<Resume />} />
+        <Route path="/stickers" element={<Stickers />} />
+        <Route path="/study" element={<Study />} />
         <Route path="/projects" element={<Projects.All />} />
           <Route path="/websites" element={<><Projects.Website /><Projects.All /></>} />
           <Route path="/rock" element={<><Projects.Rock /><Projects.All /></>} />

@@ -1,4 +1,4 @@
-import { Outlet} from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import NASAPics from ".//imgs/NASAPics.png"
 import CodingPics from ".//imgs/CodingPics.png"
 import RockInTest from ".//imgs/RockInTest.jpg"
@@ -41,7 +41,7 @@ const Website = () => {
                 <h1>Websites</h1>
                 <div>
                     <div>
-                        <p>The first code I published is called <a target="blank" href="/cube">3d cube painter</a>. The goal was for me to create a 3d viewer without any outside help. Once I made it I realized that I needed something to view so I added a feature so you can place cubes and the world. Unsuprisingly when you make a solution to a problem (3d graphics) that has been solved many times by proffessionals, you end up making something less than optimal. No matter how "janky" I am immensely proud of this project and was able to create some really cool effects. My only real regret is not making the instructions clear enough, good luck figuring them out!</p>
+                        <p>The first code I published is called <Link to="/cube">3d cube painter</Link>. The goal was for me to create a 3d viewer without any outside help. Once I made it I realized that I needed something to view so I added a feature so you can place cubes and the world. Unsuprisingly when you make a solution to a problem (3d graphics) that has been solved many times by professionals, you end up making something less than optimal. No matter how "janky" I am immensely proud of this project and was able to create some really cool effects. My only real regret is not making the instructions clear enough, good luck figuring them out!</p>
                         <p>My second published code was my take on a more traditional website. I wanted to handcraft my own site that I can use to play multiplayer board games with my friends. After so many hours learning how to make a server, link to a database, and make connections with other computers, my website was complete. And my friends I used it like 3 times....... nonetheless I am extremely glad that I made it, I learned A LOT about webdesign and the few times I played with my friends were fun. I do plan on updating it to look nicer (and remove the profanity my friends put) in the future so I will unfortunetly not be providing a link to it at the moment.</p>
                         <p>Lastly the website you are visiting now is the personal project that I am most proud of. In adition to a it being a way for mw to catoloag my experience and projects, this site acts as a convient place I can put any java scrtipt I'd like to quickly and easily share with anyone. So far I have used it to do rock transofrm and lammps stuff</p>
                     </div>
@@ -68,7 +68,7 @@ const Rock = () => {
                     <div>
                         <p>Over the course of a semster I worked with 4 other students to design a manufacturing plan to create cheap synthetic moon rocks capable of logging force interactions. To aid in rover wheel testing at NASA Glenn Research Center</p>
                         <p>This project included researching deep into the relevant mechanical properties of moon rocks and ways to replacate them. The team needed to design a system capable of joining two halves of a synthetic rock without effecting the load read by the sensor and create appropraite testing methods without access to actual moon rocks.</p> 
-                        <p>To help with certain aspects of this project I delevoped a web application called <a href="/rock_transform">Rock Transform</a>, more details about the web application can be found on it's portion of this site <a href="/rock_transform">here</a>.</p>
+                        <p>To help with certain aspects of this project I delevoped a web application called <Link to="/rock_transform">Rock Transform</Link>, more details about the web application can be found on it's portion of this site <Link to="/rock_transform">here</Link>.</p>
                         <p>After a semester long process the team was able to travel to NASA Glenn Research Center to test the synthetic rocks with Glenn's advanced machinary. Although the product did not work perfectly, the team met many important metrics and laid a strong foundation for any NASA team looking to continue with this work.</p>
                     </div>
                     <div class="big_img">
@@ -132,33 +132,33 @@ const All=() =>{
         <div class="container_container">
         <div class="container projects">
 
-        <a href="/rock" onClick={goToTop}>
+        <Link to="/rock" onClick={goToTop}>
             {Card("NASA Synthetic Sensor-Embedded Moon Rock Design and Manufacturing",
             "Over the course of a semster I worked with 4 other students to design a manufacturing plan to create cheap synthetic moon rocks capable of logging force interactions. To aid in rover wheel testing at NASA Glenn Research Center",
             RockInTest,
             `Synthetic Rock prototype inside of testing rig at the University`)}
-        </a>
+        </Link>
 
-        <a href="/pill" onClick={goToTop}>
+        <Link to="/pill" onClick={goToTop}>
             {Card("Pill Bottle Fill Station",
             'Junior Year we were given a 20"x20"x40" of 8-20 framing, a small budget and, a goal, to automatically fill and cap 12 pill bottles with exactly 30 pills each. Over the course of a year some teams made it and some did not, fortunetly my team was able to see it through and show the judges of our showcase our final working protype',
             Teambottle,
             `The team posing with the final iteration of the device`)}
-        </a>
+        </Link>
 
-        <a href="/websites" onClick={goToTop}>
+        <Link to="/websites" onClick={goToTop}>
             {Card("Websites",
             'Before this site I created two different websites. One to challenge myself with 3D graphics and another to have a place my friends I can play board games online. Neither showcase my design skills but I am nonetheless immesly proud of the final results.',
             OnlineGames,
             "Home Screen of my board game website")}
-        </a>
+        </Link>
 
-        <a href="/tire" onClick={goToTop}>
+        <Link to="/tire" onClick={goToTop}>
             {Card("NASA Flexible Tire",
             "As an extension of my teams senior design project, we were tasked with creating a device capable of sensing the footprint and pressure map from a Airless flexible tire that does not affect the results",
             MeAndTire,
             "Me happily posing with the airless flexible tire NASA provided for us to test with")}
-        </a>
+        </Link>
 
         </div>
         </div> 
